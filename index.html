@@ -1,0 +1,88 @@
+<html>
+<head>
+	<title></title>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+	<div class='container' role='main'>
+		<div class='row'>
+			<div class='col-md-12'>
+				<canvas id='memecanvas'>
+					Sorry, canvas not supported
+				</canvas>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col-md-12'>
+				<input id="custom-text" type="text" placeholder="enter some text" class='form-control'/>
+			</div>
+			<div class='col-md-12'>
+				<button id='applyChanges'type="button" class="btn btn-sm btn-default">Apply changes</button>
+				<button id="img-download" type="button" class="btn btn-sm btn-default">Download image</button>
+			</div>
+		</div>
+	</div>
+	<img id='start-image' style="display: none;" src="./assets/joseph.jpg" alt="" />
+	<script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		var canvas = document.getElementById('memecanvas');
+		var img = document.getElementById('start-image');
+		$(document).ready(function(){
+			ctx = canvas.getContext('2d');
+
+			var deviceWidth = window.innerWidth;;
+			canvasWidth = Math.min(600, deviceWidth-20);
+			canvasHeight = Math.min(480, deviceWidth-20);
+
+			canvas.width = canvasWidth;
+			canvas.height = canvasHeight;
+			//  Grab the image
+			
+			document.getElementById('applyChanges').addEventListener('click', doTransform, false);
+
+			doTransform();
+			var download = document.getElementById('img-download');
+  download.addEventListener('click', prepareDownload, false);
+ 
+  function prepareDownload() {
+    var data = canvas.toDataURL("image/png");
+    download.href = data;
+  }
+			
+		});
+		$(img).ready(function(){
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+		});
+		
+	function doTransform() {
+		ctx.save();
+		ctx.clearRect(0, 0, canvas.width, canvas.height);   
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+		// Finally, draw the image
+		ctx.lineWidth  = 5;
+		ctx.font = '18pt sans-serif';
+		ctx.strokeStyle = 'black';
+		ctx.fillStyle = 'white';
+		ctx.textAlign = 'center';
+		ctx.lineJoin = 'round';
+
+		// Draw the text
+		var text = document.getElementById('custom-text').value;
+		text = text.toUpperCase();
+		if(text){
+			text = "YOUR NEXT LINE IS: " + text;
+		}else{
+			text = "YOUR NEXT LINE IS: I HAVE TO TYPE SOMETHING!"
+		}
+		
+		x = canvas.width/2;
+		y = canvas.height - canvas.height/7;
+		ctx.strokeText(text, x, y);
+		ctx.fillText(text, x, y);
+		ctx.restore();
+	}
+
+	</script>
+</body>
+</html>
